@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('fishes', function (Blueprint $table) {
+            $table->id();
+            $table->string('fish_type');
+            $table->float('initial_weight');
+            $table->text('feeding_type');
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('fishes');
+    }
+};
