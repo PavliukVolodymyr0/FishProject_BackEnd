@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Sensors extends Model
 {
     use HasFactory;
+    protected $table = 'sensors';
+
 }
