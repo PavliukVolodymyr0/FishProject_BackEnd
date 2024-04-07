@@ -5,20 +5,41 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sensors;
+use App\Models\Category;
+use App\Models\Goods;
+use App\Models\Orders;
 
 class AdminController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function add_category(Request $request)
     {
-        //
+        $path = "no photo";
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('category', 'public');}
+        $category=Category::create([
+            'name' =>$request->name,
+            'photo' => $path,
+        ]);
+        if($path =="no photo"){
+            return response()->json(['message' => 'Photo not found'], 200);}
+        return response()->json(['message' => 'Success'], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function add_product(Request $request)
+    {
+        $path = "no photo";
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('product', 'public');}
+        $category=Goods::create([
+            'name' =>$request->name,
+            'category_id' => $request->category_id,
+            'price' => $request->price,
+            'photo' => $path,
+        ]);
+        if($path=="no photo"){return response()->json(['message' => 'Photo not found'], 200);}
+        return response()->json(['message' => 'Success'], 200);
+    }
+
     public function sensor(Request $request)
 {
     $start_date = mktime(0, 0, 0, $request->month, $request->day, $request->year);
@@ -59,9 +80,12 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update_order(Request $request)
     {
-        //
+        $order=Orders::findOrFail($request->id);
+        $order->status=$request->status;
+        $order->save();
+        return response()->json(['message' => "success"], 200);
     }
 
     /**

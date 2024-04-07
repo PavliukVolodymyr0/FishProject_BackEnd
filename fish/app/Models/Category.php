@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Special_offers extends Model
+class Category extends Model
 {
     use HasFactory;
-    protected $table = 'special_offers';
+    protected $table = 'categories';
+    protected $fillable = ['name', 'photo']; 
 }
