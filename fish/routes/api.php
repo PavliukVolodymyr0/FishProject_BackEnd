@@ -21,5 +21,8 @@ Route::prefix('admin')->group(function () {
     Route::post('/addcategory', [AdminController::class, 'add_category']);
     Route::post('/addproduct', [AdminController::class, 'add_product']);
     Route::post('/editorder', [AdminController::class, 'update_order']);
+    Route::post('/warnings', [AdminController::class, 'showWarnings']);
+    Route::post('/addsensor', [AdminController::class, 'addSensor']);
+
 
 });

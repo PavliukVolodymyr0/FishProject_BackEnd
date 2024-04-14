@@ -95,4 +95,61 @@ class AdminController extends Controller
     {
         //
     }
+
+    public function showWarnings()
+    {
+        $criticalwater = 140; // Поріг критичного значення (для прикладу)
+        $criticaltemp = 25; // Поріг критичного значення (для прикладу)
+        $criticalacidity = 8; // Поріг критичного значення (для прикладу)
+        $criticaloxygen = 50; // Поріг критичного значення (для прикладу)
+
+        $warnings = [];
+
+        // Отримати останні записи з бази даних для кожного типу показника
+        $latestWaterLevel = Sensors::where('name', 'water_level')->latest('created_at')->first();
+        $latestTemperature = Sensors::where('name', 'temperature')->latest('created_at')->first();
+        $latestAcidity = Sensors::where('name', 'acidity')->latest('created_at')->first();
+        $latestOxygenLevel = Sensors::where('name', 'oxygen_level')->latest('created_at')->first();
+
+        // Перевірити критичні показники
+        if ($latestWaterLevel && $latestWaterLevel->value < $criticalwater) {
+            $warnings[] = 'Низький рівень води!';
+        }
+
+        if ($latestTemperature && $latestTemperature->value > $criticaltemp) {
+            $warnings[] = 'Висока температура!';
+        }
+
+        if ($latestAcidity && $latestAcidity->value > $criticalacidity) {
+            $warnings[] = 'Висока кислотність!';
+        }
+
+        if ($latestOxygenLevel && $latestOxygenLevel->value < $criticaloxygen) {
+            $warnings[] = 'Низький рівень кисню!';
+        }
+
+        if (empty($warnings)) {
+            return response()->json(['message' => 'Всі показники в нормі.']);
+        } else {
+            return response()->json(['warnings' => $warnings]);
+        }
+    }
+
+    public function addSensor(Request $request)
+    {
+        // Перевірка вхідних даних
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'value' => 'required|numeric',
+        ]);
+
+        // Створення нового запису
+        $sensor = Sensors::create([
+        'name' => $request->name,
+        'value' => $request->value
+        ]);
+
+        // Повернення відповіді
+        return response()->json(['message' => 'Датчик успішно додано'], 201);
+    }
 }
