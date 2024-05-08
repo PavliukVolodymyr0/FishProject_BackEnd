@@ -34,7 +34,8 @@ class OrderController extends Controller
 
     public function show_orders()
     {   
-        $orders=Orders::all();
+        $orders=Orders::with('orderedProducts')->get();
+       // orders::with('address', 'orderedProducts')->findOrFail($request->id);
         return response()->json(['orders' => $orders], 201);
     }
 
