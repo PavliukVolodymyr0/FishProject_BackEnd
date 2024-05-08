@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('house');
             $table->string('send_type');
             $table->string('payment_type');
+            $table->float('total_price');
             $table->integer('status');
             $table->timestamps();
         });

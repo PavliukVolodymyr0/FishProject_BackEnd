@@ -61,6 +61,7 @@ class OrderController extends Controller
             'house' => $request->house,
             'status' => 1,
             'payment_type' => $request->payment_type,
+            'total_price' => 0,
             'send_type' => $request->send_type,
         ]);
 
@@ -76,8 +77,8 @@ class OrderController extends Controller
             $product = Goods::findOrFail($ordered_pr['id']);
             $total_price=$total_price+$product->price*$ordered_pr['quantity'];
         }
-       // $order->Total_price=$total_price;
-       // $order->save();
+       $order->total_price=$total_price;
+        $order->save();
 
         return response()->json(['message' => $total_price], 200);
     }
