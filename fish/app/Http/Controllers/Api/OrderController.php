@@ -32,6 +32,12 @@ class OrderController extends Controller
         return response()->json(['categories' => $categories], 201);
     }
 
+    public function show_orders()
+    {   
+        $orders=Orders::all();
+        return response()->json(['orders' => $orders], 201);
+    }
+
     public function show_special_offers()
     {   
         $special_offers=Special_offers::all();
@@ -58,10 +64,7 @@ class OrderController extends Controller
         ]);
 
         $order_id=$order->getKey();
-        $order_exemple=    [
-            ['id' => 1, 'quantity' => 2], 
-            ['id' => 2, 'quantity' => 1], 
-        ];
+        $order_exemple=$request->order;
         $total_price=0;
         foreach ($order_exemple as $ordered_pr) {
             $ordered_product = Ordered_products::create([
