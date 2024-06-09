@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->text('name');
             $table->float('value');
-            $table->text('datetime');
             $table->timestamps();
         });
     }

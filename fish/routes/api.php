@@ -18,8 +18,10 @@ Route::post('/specials', [OrderController::class, 'show_special_offers']);
 Route::prefix('admin')->group(function () {
     Route::post('/login', [UserController::class, 'login']);
     Route::get('/sensor', [AdminController::class, 'sensor']);
+    Route::post('/orders', [OrderController::class, 'show_orders']);
     Route::post('/addcategory', [AdminController::class, 'add_category']);
     Route::post('/addproduct', [AdminController::class, 'add_product']);
+    Route::post('/updateproduct', [AdminController::class, 'update_product']);
     Route::post('/editorder', [AdminController::class, 'update_order']);
     Route::post('/warnings', [AdminController::class, 'showWarnings']);
     Route::post('/addsensor', [AdminController::class, 'addSensor']);

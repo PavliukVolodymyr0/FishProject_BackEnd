@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('special_offers', function (Blueprint $table) {
             $table->id();
-            $table->integer('type');
+           // $table->integer('type');
             $table->foreignId('product_id')->constrained('products');
-            $table->float('discount_percentage');
+            $table->float('special_price');
             $table->timestamps();
         });
     }

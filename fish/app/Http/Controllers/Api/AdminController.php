@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Sensors;
 use App\Models\Category;
 use App\Models\Goods;
+use App\Models\Special_offers;
 use App\Models\Orders;
 
 class AdminController extends Controller
@@ -30,15 +31,67 @@ class AdminController extends Controller
         $path = "no photo";
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('product', 'public');}
-        $category=Goods::create([
+        $product=Goods::create([
             'name' =>$request->name,
             'category_id' => $request->category_id,
             'price' => $request->price,
             'photo' => $path,
         ]);
+        
+        if(isset($request->special_price)){
+            $special_offer=Special_offers::create([
+                'product_id' => $product->id,
+                'special_price' => $request->special_price,
+            ]);
+        }
+
         if($path=="no photo"){return response()->json(['message' => 'Photo not found'], 200);}
         return response()->json(['message' => 'Success'], 200);
     }
+
+    public function update_product(Request $request)
+{
+    $path = "no photo";
+   
+    $product = Goods::findOrFail($request->product_id);
+
+    if ($request->has('name')) {
+        $product->name = $request->name;
+    }
+
+    if ($request->has('category_id')) {
+        $product->category_id = $request->category_id;
+    }
+
+    if ($request->has('price')) {
+        $product->price = $request->price;
+    }
+
+    if ($request->hasFile('photo')) {
+        $path = $request->file('photo')->store('product', 'public');
+        $product->photo = $path;
+    }
+
+    $product->save();
+
+    if ($request->has('special_price')) {
+        $special_offer = Special_offers::updateOrCreate(
+            ['product_id' => $product->id],
+            ['special_price' => $request->special_price]
+        );
+    } else {
+        $special_offer = Special_offers::where('product_id', $product->id)->first();
+        if ($special_offer) {
+            $special_offer->delete();
+        }
+    }
+
+    if ($path == "no photo") {
+        return response()->json(['message' => 'Photo not found'], 200);
+    }
+    
+    return response()->json(['message' => 'Success'], 200);
+}
 
     public function sensor(Request $request)
 {

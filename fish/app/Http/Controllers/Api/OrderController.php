@@ -19,17 +19,39 @@ class OrderController extends Controller
     public function show_products(Request $request)
     {   
         if(isset($request->category_id)){
-        $products=Goods::where('category_id', $request->category_id)->get();}
-        else{
-            $products=Goods::all();
+            $products = Goods::where('category_id', $request->category_id)->with('specialOffer')->get();
         }
+        else{
+            $products = Goods::with('specialOffer')->get();
+        }
+    
+        // Перевіряємо наявність акційної ціни для кожного товару
+        foreach ($products as $product) {
+            if ($product->specialOffer !== null) {
+                // Якщо є акційна ціна, додаємо її до товару
+                $product->special_price = $product->specialOffer->special_price;
+                // Видаляємо зайве поле
+                unset($product->specialOffer);
+            } else {
+                // Якщо акційної ціни немає, видаляємо це поле з відповіді
+                unset($product->specialOffer);
+            }
+        }
+    
         return response()->json(['products' => $products], 201);
     }
+    
 
     public function show_categories()
     {   
         $categories=Category::all();
         return response()->json(['categories' => $categories], 201);
+    }
+
+    public function show_orders()
+    {   
+        $orders=Orders::all();
+        return response()->json(['orders' => $orders], 201);
     }
 
     public function show_special_offers()
@@ -58,10 +80,7 @@ class OrderController extends Controller
         ]);
 
         $order_id=$order->getKey();
-        $order_exemple=    [
-            ['id' => 1, 'quantity' => 2], 
-            ['id' => 2, 'quantity' => 1], 
-        ];
+        $order_exemple=$request->order;
         $total_price=0;
         foreach ($order_exemple as $ordered_pr) {
             $ordered_product = Ordered_products::create([
