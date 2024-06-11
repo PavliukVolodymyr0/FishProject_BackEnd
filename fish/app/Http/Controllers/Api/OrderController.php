@@ -19,28 +19,12 @@ class OrderController extends Controller
     public function show_products(Request $request)
     {   
         if(isset($request->category_id)){
-            $products = Goods::where('category_id', $request->category_id)->with('specialOffer')->get();
-        }
+        $products=Goods::where('category_id', $request->category_id)->get();}
         else{
-            $products = Goods::with('specialOffer')->get();
+            $products=Goods::all();
         }
-    
-        // Перевіряємо наявність акційної ціни для кожного товару
-        foreach ($products as $product) {
-            if ($product->specialOffer !== null) {
-                // Якщо є акційна ціна, додаємо її до товару
-                $product->special_price = $product->specialOffer->special_price;
-                // Видаляємо зайве поле
-                unset($product->specialOffer);
-            } else {
-                // Якщо акційної ціни немає, видаляємо це поле з відповіді
-                unset($product->specialOffer);
-            }
-        }
-    
         return response()->json(['products' => $products], 201);
     }
-    
 
     public function show_categories()
     {   
@@ -50,7 +34,8 @@ class OrderController extends Controller
 
     public function show_orders()
     {   
-        $orders=Orders::all();
+        $orders=Orders::with('orderedProducts.Product')->get();
+       // orders::with('address', 'orderedProducts')->findOrFail($request->id);
         return response()->json(['orders' => $orders], 201);
     }
 
@@ -76,6 +61,7 @@ class OrderController extends Controller
             'house' => $request->house,
             'status' => 1,
             'payment_type' => $request->payment_type,
+            'total_price' => 0,
             'send_type' => $request->send_type,
         ]);
 
@@ -91,8 +77,8 @@ class OrderController extends Controller
             $product = Goods::findOrFail($ordered_pr['id']);
             $total_price=$total_price+$product->price*$ordered_pr['quantity'];
         }
-       // $order->Total_price=$total_price;
-       // $order->save();
+       $order->total_price=$total_price;
+        $order->save();
 
         return response()->json(['message' => $total_price], 200);
     }
