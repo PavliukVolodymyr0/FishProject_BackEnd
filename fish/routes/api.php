@@ -6,9 +6,9 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\OrderController;
 
-Route::get('/user', function (Request $request) {
+/*Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware('auth:sanctum');*/
 
 Route::post('/order', [OrderController::class, 'order']);
 Route::post('/products', [OrderController::class, 'show_products']);

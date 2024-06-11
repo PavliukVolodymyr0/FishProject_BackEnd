@@ -16,7 +16,6 @@ class Goods extends Model
     
     public function specialOffer(): HasOne
     {
-        
         return $this->hasOne(Special_offers::class, 'product_id');
     }
 }
