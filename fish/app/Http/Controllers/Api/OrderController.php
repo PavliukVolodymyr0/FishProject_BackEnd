@@ -70,7 +70,7 @@ class OrderController extends Controller
         $order= orders::create([
             'surname' =>$request->surname,
             'name' => $request->name,
-            'patronymic' => $request->patronimic,
+            'patronymic' => $request->patronymic,
             'phone_number' => $request->phone_number,
             'city' => $request->city,
             'street' => $request->street,

@@ -152,7 +152,7 @@ class AdminController extends Controller
         list($start, $end) = explode('-', $dateRange);
 
         $startDate = Carbon::parse(trim($start));
-
+        $endDate = Carbon::parse(trim($end));
     } else {
         if (preg_match('/^\d{2}\.\d{4}$/', trim($dateRange))) {
             // Якщо так, додаємо перший день місяця та перетворюємо в Carbon
